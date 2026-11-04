@@ -1,0 +1,10 @@
+# PLACEHOLDER VALUES - NOT MEDICAL GUIDANCE.
+# These numbers are made up so the rule engine can be built and tested.
+# The real thresholds will be set by the doctor. Do not present these as clinical rules.
+results-line:
+  interval-rules:
+    tiers:
+      - min-polyps: 0
+        interval-years: 10
+      - min-polyps: 5
+        interval-years: 3
