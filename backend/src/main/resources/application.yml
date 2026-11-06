@@ -2,6 +2,11 @@
 # These numbers are made up so the rule engine can be built and tested.
 # The real thresholds will be set by the doctor. Do not present these as clinical rules.
 results-line:
+  claude:
+    # The API key is read from the ANTHROPIC_API_KEY environment variable, never from this file.
+    model: claude-opus-5-5
+    # Thinking tokens count toward this limit, so keep it generous.
+    max-tokens: 4096
   interval-rules:
     tiers:
       - min-polyps: 0
