@@ -7,6 +7,9 @@ results-line:
     model: claude-opus-5-5
     # Thinking tokens count toward this limit, so keep it generous.
     max-tokens: 4096
+    # true = canned keyword replies instead of calling Claude (for building the screen without a key).
+    # The UI shows a banner when this is on. Set false to use the real Claude.
+    demo-mode: false
   interval-rules:
     tiers:
       - min-polyps: 0
