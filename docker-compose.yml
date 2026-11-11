@@ -1,0 +1,17 @@
+# Starts the whole app: docker compose up --build   then open http://localhost:3000
+#
+# By default it runs in DEMO MODE (a keyword script, not Claude), so it works without an API key and
+# the screen shows a banner. To use the real Claude, put ANTHROPIC_API_KEY in .env and set DEMO_MODE=false.
+services:
+  backend:
+    build: ./backend
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      RESULTS_LINE_CLAUDE_DEMO_MODE: ${DEMO_MODE:-true}
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
