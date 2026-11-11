@@ -5,6 +5,7 @@ import com.anthropic.client.okhttp.AnthropicOkHttpClient;
 import com.anthropic.models.messages.Message;
 import com.anthropic.models.messages.MessageCreateParams;
 import com.anthropic.models.messages.StopReason;
+import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Component;
 public class AnthropicClaudeClient implements ClaudeClient {
 
     private final ClaudeConfig config;
+    private final AtomicLong inputTokens = new AtomicLong();
+    private final AtomicLong outputTokens = new AtomicLong();
     private AnthropicClient client;
 
     public AnthropicClaudeClient(ClaudeConfig config) {
@@ -34,6 +37,8 @@ public class AnthropicClaudeClient implements ClaudeClient {
                 .build();
 
         Message response = client().messages().create(params);
+        inputTokens.addAndGet(response.usage().inputTokens());
+        outputTokens.addAndGet(response.usage().outputTokens());
 
         // Refusals, truncation and anything else abnormal must not reach the validator as a "reply".
         boolean finishedNormally = response.stopReason()
@@ -47,6 +52,11 @@ public class AnthropicClaudeClient implements ClaudeClient {
         StringBuilder text = new StringBuilder();
         response.content().forEach(block -> block.text().ifPresent(t -> text.append(t.text())));
         return text.toString();
+    }
+
+    @Override
+    public TokenUsage tokenUsage() {
+        return new TokenUsage(inputTokens.get(), outputTokens.get());
     }
 
     private synchronized AnthropicClient client() {
